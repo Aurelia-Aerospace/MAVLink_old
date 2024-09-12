@@ -39,5 +39,9 @@
     commands: 50000 - 50099
   -->
   <include>cubepilot.xml</include>
+  <!-- aurelia.xml range of IDs:
+    messages: 52200 - 52299
+  -->
+  <include>aurelia.xml</include>
   <messages/>
 </mavlink>
