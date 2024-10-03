@@ -4,45 +4,63 @@
 <mavlink>
   <include>common.xml</include>
   <enums>
-    <enum name="MAV_AURELIA_AIRPORT_STATUS">
-        <entry value="0" name="MAV_AURELIA_AIPORT_STATUS_ALLOWED">
-            <description>Good for keep flying</description>
+    <enum name="MAV_AURELIA_CHECK_STATUS">
+        <entry value="0" name="MAV_AURELIA_CHECK_STATUS_GOOD_TO_ARM">
+            <description>Good for flying</description>
         </entry>
-        <entry value="1" name="MAV_AURELIA_AIPORT_STATUS_NOT_ALLOWED">
-            <description>Flying near an aiport</description>
+        <entry value="1" name="MAV_AURELIA_CHECK_STATUS_FAIL_GENERIC">
+            <description>Generic failure</description>
         </entry>
-        <entry value="2" name="MAV_AURELIA_AIPORT_STATUS_GENERIC_ERROR">
-            <description>GPS lost</description>
+        <entry value="2" name="MAV_AURELIA_CHECK_STATUS_FAIL_GPS">
+            <description>GPS failure</description>
+        </entry>
+        <entry value="3" name="MAV_AURELIA_CHECK_STATUS_FAIL_FLYING_NOT_ALLOWED">
+            <description>Flying in a non authorized zone</description>
+        </entry>
+        <entry value="4" name="MAV_AURELIA_CHECK_STATUS_FAIL_LOST_MODULE">
+            <description>Lost module</description>
+        </entry>
+    </enum>
+    <enum name="MAV_AURELIA_UTIL_ACK_REQUEST">
+        <entry value="0" name="MAV_AURELIA_UTIL_ACK_REQUEST_NEED">
+            <description>Need external module to send an ACK message</description>
+        </entry>
+        <entry value="1" name="MAV_AURELIA_UTIL_ACK_REQUEST_DONE">
+            <description>Don't need external module to send an ACK message</description>
         </entry>
     </enum>
   </enums>
   <messages>
-    <message id="52201" name="AURELIA_AIRPORT_CHECK_STATUS">
-      <description>Status of flying near an airport</description>
-      <field type="uint8_t" name="status" enum="MAV_AURELIA_AIRPORT_STATUS">Status level indicating if flying is allowed.</field>
+    <message id="52201" name="AURELIA_ODID_STATUS">
+      <description>Status of ODID module</description>
+      <field type="uint8_t" name="status" enum="MAV_AURELIA_CHECK_STATUS">Status level indicating if flying is allowed.</field>
       <field type="char[50]" name="error">Text error message, should be empty if status is good to arm. Fill with nulls in unused portion.</field>
     </message>
-    <message id="52202" name="AURELIA_AIRPORT_CHECK_LOCATION">
-      <description>Drone location message to check if flying near an airport</description>
-      <field type="uint8_t" name="target_system">System ID (0 for broadcast).</field>
-      <field type="uint8_t" name="target_component">Component ID (0 for broadcast).</field>
-      <field type="int32_t" name="latitude" units="degE7" invalid="0">Current latitude of the unmanned aircraft. If unknown: 0 (both Lat/Lon).</field>
-      <field type="int32_t" name="longitude" units="degE7" invalid="0">Current longitude of the unmanned aircraft. If unknown: 0 (both Lat/Lon).</field>
-      <field type="float" name="altitude_barometric" units="m" invalid="-1000">The altitude calculated from the barometric pressue. Reference is against 29.92inHg or 1013.2mb. If unknown: -1000 m.</field>
-      <field type="float" name="altitude_geodetic" units="m" invalid="-1000">The geodetic altitude as defined by WGS84. If unknown: -1000 m.</field>
-      <field type="float" name="timestamp" units="s" invalid="0xFFFF">Seconds after the full hour with reference to UTC time. Typically the GPS outputs a time-of-week value in milliseconds. First convert that to UTC and then convert for this field using ((float) (time_week_ms % (60*60*1000))) / 1000. If unknown: 0xFFFF.</field>
-    </message>
-    <message id="52203" name="AURELIA_ODID_SERIAL_NUMBER">
+    <message id="52202" name="AURELIA_ODID_SERIAL_NUMBER">
       <description>ODID module serial number</description>
       <field type="uint8_t" name="target_system">System ID (0 for broadcast).</field>
       <field type="uint8_t" name="target_component">Component ID (0 for broadcast).</field>
       <field type="int32_t" name="serial_number">Serial number of the RID module</field>
     </message>
-    <message id="52204" name="AURELIA_FLT_TIME">
+    <message id="52203" name="AURELIA_FLT_TIME">
       <description>Total time of flight of drone to be stored in RID module</description>
       <field type="uint8_t" name="target_system">System ID (0 for broadcast).</field>
       <field type="uint8_t" name="target_component">Component ID (0 for broadcast).</field>
       <field type="uint32_t" name="flt_time">Flight time in seconds</field>
+    </message>
+    <message id="52204" name="AURELIA_UTIL_ACK_REQUEST">
+      <description>Message for requesting an ACK message for aurelia modules</description>
+      <field type="uint8_t" name="target_system">System ID (0 for broadcast).</field>
+      <field type="uint8_t" name="target_component">Component ID (0 for broadcast).</field>
+      <field type="uint8_t" name="status" enum="MAV_AURELIA_UTIL_ACK_REQUEST">Tells the external module if it needs to send an ACK message</field>
+    </message>
+    <message id="52205" name="AURELIA_UTIL_ACK_MESSAGE">
+      <description>ACK message response for aurelia modules</description>
+      <field type="uint8_t" name="target_system">System ID (0 for broadcast).</field>
+      <field type="uint8_t" name="target_component">Component ID (0 for broadcast).</field>
+      <field type="uint8_t[16]" name="mac">MAC for ciphered text</field>
+      <field type="uint8_t[24]" name="nonce">Nonce for ciphered text</field>
+      <field type="uint8_t[17]" name="cipher_text">Ciphered text with timestamp</field>
     </message>
   </messages>
 </mavlink>
