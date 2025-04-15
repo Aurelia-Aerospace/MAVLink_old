@@ -66,6 +66,7 @@ generate_headers storm32 $1
 generate_headers ardupilotmega $1
 generate_headers csAirLink $1
 generate_headers uAvionix $1
+generate_headers aurelia $1
 generate_headers cubepilot $1
 generate_headers ualberta $1
 generate_headers paparazzi $1
