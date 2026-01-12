@@ -48,5 +48,9 @@
     messages: 52100 - ? < 60000
     commands: 52100 - ? < 60000
   -->
+  <!-- aurelia.xml range of IDs:
+    messages: 52200 - 52299
+  -->
+  <include>aurelia.xml</include>
   <messages/>
 </mavlink>
